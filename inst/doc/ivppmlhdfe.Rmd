@@ -1,0 +1,94 @@
+---
+title: "Getting started with ivppmlhdfe"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting started with ivppmlhdfe}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
+`ivppmlhdfe` fits instrumental-variable Poisson pseudo-maximum-likelihood
+(IV-PPML) models with high-dimensional fixed effects. It is an R translation of
+the Stata command of the same name (Kwon, Larch, Yoon and Yotov, 2026), and
+reproduces `ppmlhdfe` / `fixest::fepois` point estimates to machine precision in
+the plain (no-instrument) case.
+
+> **Attribution.** This package is *only a translation*. All credit for the
+> estimator and methodology goes to the original authors, Ohyun Kwon, Mario
+> Larch, Jangsu Yoon and Yoto V. Yotov. The R translation is by Guewen Heslan
+> (PhD Candidate in Economics, Nantes Université, France) using Claude Opus,
+> available at <https://github.com/gheslan/ivppmlhdfe-for-r>.
+
+```{r}
+library(ivppmlhdfe)
+data(ivppmlhdfe_ClassA)
+```
+
+## The endogeneity problem
+
+In the Monte-Carlo design the endogenous regressor `x1` has a true coefficient
+of `0.5`, but it is correlated with the error, so ordinary PPML is biased:
+
+```{r}
+ppml <- ivppmlhdfe(y ~ x1 + x2 | id + year, data = ivppmlhdfe_ClassA)
+coef(ppml)["x1"]   # biased upward, away from 0.5
+```
+
+Instrumenting `x1` with `z` removes the bias:
+
+```{r}
+iv <- ivppmlhdfe(y ~ x2 | id + year | x1 ~ z, data = ivppmlhdfe_ClassA)
+coef(iv)["x1"]     # close to the true 0.5
+summary(iv)
+```
+
+## Two- and three-way gravity models
+
+```{r}
+data(ivppmlhdfe_ClassB)
+b <- ivppmlhdfe(y ~ x2 | exp^year + imp^year | x1 ~ z,
+                data = ivppmlhdfe_ClassB, cluster = ~pair)
+coef(b)["x1"]
+```
+
+`^` denotes an interacted fixed effect (Stata's `#`). Standard errors can be
+heteroskedasticity-robust (the default) or one-/two-way cluster-robust via the
+`cluster` argument.
+
+## Split-panel jackknife bias correction
+
+Replacing the regressor with an instrument re-introduces incidental-parameter
+bias. The split-panel jackknife removes its leading-order term. For Class A the
+estimator splits along both the time and the cross-sectional dimension:
+
+```{r}
+s <- ivppml_spj(y ~ x2 | id + year | x1 ~ z, data = ivppmlhdfe_ClassA,
+                class = "A", id = "id", time = "year", B = 0)
+s$b_full   # uncorrected
+s$b_spj    # SPJ-corrected
+```
+
+Set `B > 0` (the paper uses `B = 1000`) to obtain pair/individual-bootstrap
+standard errors and a percentile confidence interval.
+
+## Validating against ppmlhdfe / fepois
+
+```{r}
+if (requireNamespace("fixest", quietly = TRUE)) {
+  fe <- fixest::fepois(y ~ x1 + x2 | id + year, data = ivppmlhdfe_ClassA,
+                       notes = FALSE)
+  rbind(ivppmlhdfe = coef(ppml)[c("x1", "x2")],
+        fepois     = coef(fe)[c("x1", "x2")])
+}
+```
+
+The two sets of coefficients agree to machine precision.
+
+## References
+
+Kwon, O., M. Larch, J. Yoon, and Y.V. Yotov (2026). *Instrumental-Variable
+Poisson PML with High-Dimensional Fixed Effects.* CESifo Working Paper 12641.

@@ -1,0 +1,19 @@
+citHeader(paste(
+  "This R package is only a translation, by Guewen Heslan (using Claude Opus),",
+  "of the Stata package by Kwon, Larch, Yoon and Yotov.",
+  "Please cite the original authors' working paper:"))
+
+bibentry(
+  bibtype = "TechReport",
+  title   = "Instrumental-Variable Poisson PML with High-Dimensional Fixed Effects",
+  author  = c(person("Ohyun", "Kwon"), person("Mario", "Larch"),
+              person("Jangsu", "Yoon"), person("Yoto V.", "Yotov")),
+  institution = "CESifo",
+  type    = "Working Paper",
+  number  = "12641",
+  year    = "2026",
+  url     = "https://www.ifo.de/en/cesifo/publications/2026/working-paper/instrumental-variable-poisson-pml-high-dimensional-fixed-effects",
+  textVersion = paste("Kwon, O., Larch, M., Yoon, J., and Yotov, Y.V. (2026).",
+    "Instrumental-Variable Poisson PML with High-Dimensional Fixed Effects.",
+    "CESifo Working Paper 12641.")
+)

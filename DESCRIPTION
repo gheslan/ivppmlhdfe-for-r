@@ -1,0 +1,61 @@
+Package: ivppmlhdfe
+Type: Package
+Title: Instrumental-Variable Poisson PML with High-Dimensional Fixed
+        Effects
+Version: 0.9.4
+Authors@R: c(
+    person("Ohyun", "Kwon", role = c("aut", "cph"),
+           comment = "original Stata package and method"),
+    person("Mario", "Larch", role = c("aut", "cph"),
+           comment = "original Stata package and method"),
+    person("Jangsu", "Yoon", role = c("aut", "cph"),
+           comment = "original Stata package and method"),
+    person("Yoto V.", "Yotov", role = c("aut", "cph"),
+           comment = "original Stata package and method"),
+    person("Guewen", "Heslan", role = c("cre", "trl"),
+           email = "guewen.heslan@univ-nantes.fr",
+           comment = "PhD Candidate in Economics, Nantes Universite, France; R translation using Claude Opus; not an author of the original work"))
+Description: An R translation of the Stata package 'ivppmlhdfe' by Ohyun Kwon,
+    Mario Larch, Jangsu Yoon and Yoto V. Yotov, developed in their working paper
+    "Instrumental-Variable Poisson PML with High-Dimensional Fixed Effects"
+    (CESifo Working Paper 12641, 2026,
+    <https://www.ifo.de/en/cesifo/publications/2026/working-paper/instrumental-variable-poisson-pml-high-dimensional-fixed-effects>).
+    This package is solely a translation by Guewen Heslan (carried out using
+    Claude Opus); all intellectual credit for the estimator, the methodology and
+    the original implementation belongs to the original authors. It fits
+    instrumental-variable Poisson pseudo-maximum-likelihood (IV-PPML) models
+    with multiple sets of high-dimensional fixed effects, solving the additive
+    moment condition of Windmeijer and Santos Silva (1997)
+    <doi:10.1002/(SICI)1099-1255(199705)12:3%3C281::AID-JAE436%3E3.0.CO;2-1>
+    via iteratively reweighted two-stage least squares with the fixed effects
+    concentrated out at every iteration following Correia, Guimaraes and Zylkin
+    (2020) <doi:10.1177/1536867X20909691>. It provides heteroskedasticity-robust
+    and (multi-way) cluster-robust standard errors, automatic detection of
+    singletons, fixed-effect separation and ReLU separation, two-stage
+    collinearity removal, and the split-panel-jackknife bias correction with
+    bootstrap standard errors of the original paper. Plain Poisson PML (no
+    instruments) reproduces 'ppmlhdfe' / 'fixest::fepois' point estimates to
+    machine precision.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Depends: R (>= 3.5.0)
+Imports: stats, fixest (>= 0.11.0)
+Suggests: testthat (>= 3.0.0), knitr, rmarkdown
+Roxygen: list(markdown = FALSE)
+Config/testthat/edition: 3
+VignetteBuilder: knitr
+URL: https://github.com/gheslan/ivppmlhdfe-for-r,
+        https://github.com/ekwonomist/ivppmlhdfe
+BugReports: https://github.com/gheslan/ivppmlhdfe-for-r/issues
+Config/roxygen2/version: 8.0.0
+NeedsCompilation: no
+Packaged: 2026-06-13 08:37:31 UTC; root
+Author: Ohyun Kwon [aut, cph] (original Stata package and method),
+  Mario Larch [aut, cph] (original Stata package and method),
+  Jangsu Yoon [aut, cph] (original Stata package and method),
+  Yoto V. Yotov [aut, cph] (original Stata package and method),
+  Guewen Heslan [cre, trl] (PhD Candidate in Economics, Nantes
+    Universite, France; R translation using Claude Opus; not an author
+    of the original work)
+Maintainer: Guewen Heslan <guewen.heslan@univ-nantes.fr>
